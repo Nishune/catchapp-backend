@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class InMemoryUserRepository implements UserRepository {
 
     private final Map<Long, User> users = new ConcurrentHashMap<>();
-    private final AtomicLong idGenerator = new AtomicLong();
+    private final AtomicLong idGenerator = new AtomicLong(1);
 
     @Override
     public Optional<User> findByUsername(String username) {
@@ -32,10 +32,17 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
-        if (user.getId() == null) {
-            user.setId(idGenerator.getAndIncrement());
-        }
-        users.put(user.getId(), user);
-        return user;
+        Long id = user.getId() != null ? user.getId() : idGenerator.getAndIncrement();
+
+        User savedUser = new User.Builder()
+                .id(id)
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .passwordHash(user.getPasswordHash())
+                .createdAt(user.getCreatedAt())
+                .build();
+
+        users.put(id, savedUser);
+        return savedUser;
     }
 }
