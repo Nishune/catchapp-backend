@@ -64,6 +64,14 @@
             <artifactId>hibernate-validator</artifactId>
             <version>8.0.3.Final</version>
         </dependency>
+        <!-- RESTEasy implementation for JAX-RS so Response works in tests -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-core</artifactId>
+            <version>6.2.8.Final</version>
+            <scope>test</scope>
+        </dependency>
+
 
 
     </dependencies>

@@ -34,7 +34,7 @@ public class InMemoryUserRepository implements UserRepository {
     public User save(User user) {
         Long id = user.getId() != null ? user.getId() : idGenerator.getAndIncrement();
 
-        User savedUser = new User.Builder()
+        User savedUser = User.builder()
                 .id(id)
                 .username(user.getUsername())
                 .email(user.getEmail())

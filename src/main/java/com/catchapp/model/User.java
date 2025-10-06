@@ -17,6 +17,10 @@ public class User {
         this.createdAt = builder.createdAt != null ? builder.createdAt : Instant.now();
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder {
         private Long id;
         private String username;

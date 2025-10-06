@@ -29,7 +29,7 @@ public User register(String username, String email, String rawPassword) {
         }
 
         String hash = BCrypt.hashpw(rawPassword, BCrypt.gensalt());
-        User u = new User.Builder()
+        User u = User.builder()
                 .username(username)
                 .email(email)
                 .passwordHash(hash)
