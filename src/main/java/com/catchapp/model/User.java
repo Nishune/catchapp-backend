@@ -3,7 +3,7 @@ package com.catchapp.model;
 import java.time.Instant;
 
 public class User {
-private long id;
+private Long id;
 private String username;
 private String email;
 private String passwordHash;
@@ -11,7 +11,7 @@ private Instant createdAt = Instant.now();
 
 public User() {}
 
-    public User(long id, String username, String email, String passwordHash) {
+    public User(Long id, String username, String email, String passwordHash) {
         this.id = id;
         this.username = username;
         this.email = email;
