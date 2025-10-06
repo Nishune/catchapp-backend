@@ -71,6 +71,14 @@
             <version>6.2.8.Final</version>
             <scope>test</scope>
         </dependency>
+        <!-- EL implementation required by Hibernate Validator in tests -->
+        <dependency>
+            <groupId>org.glassfish.expressly</groupId>
+            <artifactId>expressly</artifactId>
+            <version>6.0.0</version>
+            <scope>test</scope>
+        </dependency>
+
 
 
 
