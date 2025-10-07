@@ -1,10 +1,10 @@
 package com.catchapp.api.dto;
 
-public class LogoutReponse {
+public class LogoutResponse {
 
     private String message;
 
-    public LogoutReponse(String message) {
+    public LogoutResponse(String message) {
         this.message = message;
     }
 

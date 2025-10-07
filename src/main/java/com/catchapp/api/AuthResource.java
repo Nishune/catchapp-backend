@@ -1,10 +1,8 @@
 package com.catchapp.api;
 
-import com.catchapp.api.dto.LoginRequest;
-import com.catchapp.api.dto.LoginResponse;
-import com.catchapp.api.dto.RegisterRequest;
-import com.catchapp.api.dto.UserDto;
+import com.catchapp.api.dto.*;
 import com.catchapp.model.User;
+import com.catchapp.security.JwtSecured;
 import com.catchapp.security.JwtUtil;
 import com.catchapp.service.UserService;
 import jakarta.inject.Inject;
@@ -48,5 +46,12 @@ public class AuthResource {
             return Response.ok(new LoginResponse(token, user.getId(), user.getUsername()))
                     .build();
 
+    }
+
+    @POST
+    @Path("/logout")
+    @JwtSecured
+    public Response logout() {
+        return Response.ok(new LogoutResponse("Utloggning lyckades")).build();
     }
 }
