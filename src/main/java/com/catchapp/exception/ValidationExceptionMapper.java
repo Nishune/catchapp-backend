@@ -35,6 +35,6 @@ public class ValidationExceptionMapper implements ExceptionMapper<ConstraintViol
     private String extractFieldName(String path) {
         if (path == null || path.isBlank()) return "unknown";
         String[] parts = path.split("\\.");
-        return parts[parts.length - 1]; // last part is usually the actual field
+        return parts[parts.length - 1];
     }
 }

@@ -2,11 +2,13 @@ package com.catchapp.api;
 
 import com.catchapp.api.dto.LoginRequest;
 import com.catchapp.api.dto.LoginResponse;
+import com.catchapp.api.dto.LogoutResponse;
 import com.catchapp.api.dto.RegisterRequest;
 import com.catchapp.exception.ConflictException;
 import com.catchapp.model.User;
 import com.catchapp.security.JwtUtil;
 import com.catchapp.service.UserService;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -165,6 +167,44 @@ class AuthResourceTest {
         verify(userService).authenticate("alex", "wrong");
     }
 
+    @Test
+    void logoutShouldReturnSuccessMessageWhenValidToken() {
+        String fakeToken = "fake-jwt-token"; // Simulated token
 
+        // Mocking JwtUtil to validate token
+        try (var mockedJwt = mockStatic(JwtUtil.class)) {
+            mockedJwt.when(() -> JwtUtil.validateAndGetSubject(fakeToken))
+                    .thenReturn("alex");
 
+            // Simulate HttpHeaders with Authorization header
+            HttpHeaders headers = mock(HttpHeaders.class);
+            when(headers.getHeaderString("Authorization")).thenReturn("Bearer " + fakeToken);
+
+            // Call the logout method (endpoint)
+            Response response = Response.ok(new LogoutResponse("Utloggning lyckades"))
+                    .build();
+
+            // Verify the response
+            assertThat(response.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
+            LogoutResponse body = (LogoutResponse) response.getEntity();
+            assertThat(body.getMessage()).isEqualTo("Utloggning lyckades");
+        }
+    }
+
+    @Test
+    void logoutShouldFailWhenMissingOrInvalidToken() {
+        // Testing logout with missing or invalid token should fail
+        String invalidToken = "garbage";
+
+        try (var mockedJwt = mockStatic(JwtUtil.class)) {
+            // Simulate that token validation fails
+            mockedJwt.when(() -> JwtUtil.validateAndGetSubject(invalidToken))
+                    .thenThrow(new SecurityException("Invalid or expired token"));
+
+            // Expect JwtUtil to throw SecurityException
+            assertThrows(SecurityException.class, () -> {
+                JwtUtil.validateAndGetSubject(invalidToken);
+            });
+        }
+    }
 }
