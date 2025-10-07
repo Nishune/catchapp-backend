@@ -1,10 +1,11 @@
 package com.catchapp.api;
 
-import com.catchapp.api.dto.ErrorResponse;
+import com.catchapp.api.dto.LoginRequest;
+import com.catchapp.api.dto.LoginResponse;
 import com.catchapp.api.dto.RegisterRequest;
 import com.catchapp.api.dto.UserDto;
-import com.catchapp.exception.ConflictException;
 import com.catchapp.model.User;
+import com.catchapp.security.JwtUtil;
 import com.catchapp.service.UserService;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -21,7 +22,7 @@ import jakarta.ws.rs.core.Response;
 public class AuthResource {
 
     @Inject
-    UserService userService;
+    private UserService userService;
 
     // Default constructor needed by JAX-RS
     public AuthResource() {}
@@ -33,20 +34,19 @@ public class AuthResource {
     @POST
     @Path("/register")
     public Response register(@Valid RegisterRequest req) {
-        try {
-            User u = userService.register(req.getUsername(), req.getEmail(), req.getPassword());
-            return Response.status(Response.Status.CREATED)
-                    .entity(UserDto.from(u))
-                    .build();
-        } catch (ConflictException e) {
+        User user = userService.register(req.getUsername(), req.getEmail(), req.getPassword());
+        return Response.status(Response.Status.CREATED)
+                .entity(UserDto.from(user))
+                .build();
+    }
 
-            return Response.status(Response.Status.CONFLICT)
-                    .entity(ErrorResponse.of(e.getMessage()))
+    @POST
+    @Path("/login")
+    public Response login(@Valid LoginRequest req) {
+            User user = userService.authenticate(req.getUsername(), req.getPassword());
+            String token = JwtUtil.generateToken(user.getUsername());
+            return Response.ok(new LoginResponse(token, user.getId(), user.getUsername()))
                     .build();
-        } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(ErrorResponse.of(e.getMessage()))
-                    .build();
-        }
+
     }
 }
