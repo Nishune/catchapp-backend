@@ -1,6 +1,7 @@
 package com.catchapp.repository;
 
 import com.catchapp.model.Activity;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+@ApplicationScoped
 public class InMemoryActivityRepository implements ActivityRepository {
 
     private final Map<Long, Activity> activities = new ConcurrentHashMap<>();
