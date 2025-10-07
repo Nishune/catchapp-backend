@@ -175,5 +175,25 @@ public class UserServiceTest {
         assertThat(BCrypt.checkpw(newPassword, user.getPasswordHash())).isTrue();
     }
 
+    @Test
+    void shouldFailWhenOldPasswordIncorrect() {
+        String username = "alex"; // Existing user
+        String oldPassword = "wrongpass"; // Incorrect current password
+        String correctHash = BCrypt.hashpw("rightpass", BCrypt.gensalt()); // Correct password hash
 
+        User user = User.builder()
+                .username(username)
+                .passwordHash(correctHash)
+                .build();
+
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+
+        assertThatThrownBy(() ->
+                userService.changePassword(username, oldPassword, "newpass123")
+        )
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Incorrect current password");
+
+        verify(userRepository, never()).save(any());
+    }
 }
