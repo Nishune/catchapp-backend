@@ -38,4 +38,14 @@ public User register(String username, String email, String rawPassword) {
         return userRepository.save(u);
 }
 
+public User authenticate(String username, String rawPassword) {
+        var optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isEmpty()) throw new IllegalArgumentException("Invalid username or password");
+        User user = optionalUser.get();
+        if (!BCrypt.checkpw(rawPassword, user.getPasswordHash())) {
+            throw new IllegalArgumentException("Invalid username or password");
+        }
+        return user;
+    }
+
 }
