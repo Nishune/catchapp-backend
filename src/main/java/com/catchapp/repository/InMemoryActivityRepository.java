@@ -3,7 +3,6 @@ package com.catchapp.repository;
 import com.catchapp.model.Activity;
 import jakarta.enterprise.context.ApplicationScoped;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,29 +19,29 @@ public class InMemoryActivityRepository implements ActivityRepository {
     public InMemoryActivityRepository() {
         // Data for development and testing purposes
 
-        save(Activity.builder()
-                .title("Filmkväll")
-                .description("Se film med vänner")
-                .date(LocalDate.now().plusDays(1))
-                .location("Luleå")
-                .imageUrl("film.jpg")
-                .build());
-
-        save(Activity.builder()
-                .title("Löpning i parken")
-                .description("5 km med lokalgrupp")
-                .date(LocalDate.now().plusDays(2))
-                .location("Piteå")
-                .imageUrl("run.jpg")
-                .build());
-
-        save(Activity.builder()
-                .title("Brädspelskväll")
-                .description("Klassiska spel och fika")
-                .date(LocalDate.now().plusDays(3))
-                .location("Boden")
-                .imageUrl("boardgames.jpg")
-                .build());
+//        save(Activity.builder()
+//                .title("Filmkväll")
+//                .description("Se film med vänner")
+//                .date(LocalDate.now().plusDays(1))
+//                .location("Luleå")
+//                .imageUrl("film.jpg")
+//                .build());
+//
+//        save(Activity.builder()
+//                .title("Löpning i parken")
+//                .description("5 km med lokalgrupp")
+//                .date(LocalDate.now().plusDays(2))
+//                .location("Piteå")
+//                .imageUrl("run.jpg")
+//                .build());
+//
+//        save(Activity.builder()
+//                .title("Brädspelskväll")
+//                .description("Klassiska spel och fika")
+//                .date(LocalDate.now().plusDays(3))
+//                .location("Boden")
+//                .imageUrl("boardgames.jpg")
+//                .build());
     }
 
     @Override
