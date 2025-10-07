@@ -52,4 +52,14 @@ class RegisterRequestTest {
         Set<ConstraintViolation<RegisterRequest>> violations = validator.validate(req);
         assertThat(violations).hasSizeGreaterThanOrEqualTo(1); // Expect at least one violation
     }
+    @Test
+    void invalidShortUsername() {
+        RegisterRequest req = new RegisterRequest();
+        req.setUsername("ab"); // too short
+        req.setEmail("test@example.com");
+        req.setPassword("password123");
+
+        Set<ConstraintViolation<RegisterRequest>> violations = validator.validate(req);
+        assertThat(violations).hasSize(1);
+    }
 }
