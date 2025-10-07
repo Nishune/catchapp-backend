@@ -72,4 +72,14 @@ class RegisterRequestTest {
         Set<ConstraintViolation<RegisterRequest>> violations = validator.validate(req);
         assertThat(violations).hasSizeGreaterThanOrEqualTo(1);
     }
+    @Test
+    void invalidShortPassword() {
+        RegisterRequest req = new RegisterRequest();
+        req.setUsername("testuser");
+        req.setEmail("test@example.com");
+        req.setPassword("123"); // too short
+
+        Set<ConstraintViolation<RegisterRequest>> violations = validator.validate(req);
+        assertThat(violations).hasSize(1);
+    }
 }
