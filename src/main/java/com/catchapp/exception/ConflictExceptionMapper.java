@@ -7,11 +7,11 @@ import jakarta.ws.rs.ext.Provider;
 
 
 @Provider
-public class IllegalArgumentExceptionMapper implements ExceptionMapper<IllegalArgumentException> {
+public class ConflictExceptionMapper implements ExceptionMapper<ConflictException> {
 
     @Override
-    public Response toResponse(IllegalArgumentException e) {
-        return Response.status(Response.Status.BAD_REQUEST)
+    public Response toResponse(ConflictException e) {
+        return Response.status(Response.Status.CONFLICT)
                 .entity(ErrorResponse.of(e.getMessage()))
                 .build();
     }
