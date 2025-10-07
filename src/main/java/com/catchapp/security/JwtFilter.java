@@ -6,9 +6,11 @@ import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.ext.Provider;
 
 import java.io.IOException;
+import java.security.Principal;
 
 @Provider
 @JwtSecured
@@ -17,7 +19,6 @@ public class JwtFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext ctx) throws IOException {
-
         if ("OPTIONS".equalsIgnoreCase(ctx.getMethod())) return;
 
         String auth = ctx.getHeaderString("Authorization");
@@ -25,10 +26,36 @@ public class JwtFilter implements ContainerRequestFilter {
             abort(ctx, 401, "Missing or invalid Authorization header");
             return;
         }
+
         String token = auth.substring("Bearer ".length()).trim();
+
         try {
             String username = JwtUtil.validateAndGetSubject(token);
-            ctx.setProperty("username", username);
+
+
+            SecurityContext current = ctx.getSecurityContext();
+            ctx.setSecurityContext(new SecurityContext() {
+                @Override
+                public Principal getUserPrincipal() {
+                    return () -> username;
+                }
+
+                @Override
+                public boolean isUserInRole(String role) {
+                    return false;
+                }
+
+                @Override
+                public boolean isSecure() {
+                    return current != null && current.isSecure();
+                }
+
+                @Override
+                public String getAuthenticationScheme() {
+                    return "Bearer";
+                }
+            });
+
         } catch (SecurityException e) {
             abort(ctx, 401, e.getMessage());
         }

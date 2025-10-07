@@ -48,4 +48,23 @@ public User authenticate(String username, String rawPassword) {
         return user;
     }
 
+    public void changePassword(String username, String oldPassword, String newPassword) {
+        var userOpt = userRepository.findByUsername(username);
+        if (userOpt.isEmpty()) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        User user = userOpt.get();
+
+        if (!BCrypt.checkpw(oldPassword, user.getPasswordHash())) {
+            throw new IllegalArgumentException("Incorrect current password");
+        }
+
+        String newHash = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+        user.setPasswordHash(newHash);
+
+        userRepository.save(user);
+    }
+
+
 }

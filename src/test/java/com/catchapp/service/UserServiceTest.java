@@ -155,6 +155,45 @@ public class UserServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Invalid username or password");
     }
+    @Test
+    void changePasswordShouldUpdateWhenOldPasswordCorrect() {
+        String username = "alex";
+        String oldPassword = "oldpass123";
+        String newPassword = "newpass456";
 
+        User user = User.builder()
+                .username(username)
+                .passwordHash(BCrypt.hashpw(oldPassword, BCrypt.gensalt()))
+                .build();
 
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+
+        userService.changePassword(username, oldPassword, newPassword);
+
+        verify(userRepository).findByUsername(username);
+        verify(userRepository).save(user);
+        assertThat(BCrypt.checkpw(newPassword, user.getPasswordHash())).isTrue();
+    }
+
+    @Test
+    void shouldFailWhenOldPasswordIncorrect() {
+        String username = "alex"; // Existing user
+        String oldPassword = "wrongpass"; // Incorrect current password
+        String correctHash = BCrypt.hashpw("rightpass", BCrypt.gensalt()); // Correct password hash
+
+        User user = User.builder()
+                .username(username)
+                .passwordHash(correctHash)
+                .build();
+
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+
+        assertThatThrownBy(() ->
+                userService.changePassword(username, oldPassword, "newpass123")
+        )
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Incorrect current password");
+
+        verify(userRepository, never()).save(any());
+    }
 }
