@@ -64,4 +64,6 @@ public class User {
     public String getEmail() { return email; }
     public String getPasswordHash() { return passwordHash; }
     public Instant getCreatedAt() { return createdAt; }
+
+    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
 }

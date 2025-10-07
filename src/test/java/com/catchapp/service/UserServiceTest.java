@@ -155,7 +155,25 @@ public class UserServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Invalid username or password");
     }
+    @Test
+    void changePasswordShouldUpdateWhenOldPasswordCorrect() {
+        String username = "alex";
+        String oldPassword = "oldpass123";
+        String newPassword = "newpass456";
 
+        User user = User.builder()
+                .username(username)
+                .passwordHash(BCrypt.hashpw(oldPassword, BCrypt.gensalt()))
+                .build();
+
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+
+        userService.changePassword(username, oldPassword, newPassword);
+
+        verify(userRepository).findByUsername(username);
+        verify(userRepository).save(user);
+        assertThat(BCrypt.checkpw(newPassword, user.getPasswordHash())).isTrue();
+    }
 
 
 }
