@@ -22,7 +22,7 @@ import jakarta.ws.rs.core.Response;
 public class AuthResource {
 
     @Inject
-    UserService userService;
+    private UserService userService;
 
     // Default constructor needed by JAX-RS
     public AuthResource() {}
