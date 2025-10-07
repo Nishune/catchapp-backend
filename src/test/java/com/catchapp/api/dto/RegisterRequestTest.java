@@ -41,4 +41,15 @@ class RegisterRequestTest {
 
         assertThat(violations).isEmpty(); // Expect no violations
     }
+
+    @Test
+    void invalidBlankUsername() {
+        RegisterRequest req = new RegisterRequest();
+        req.setUsername("");
+        req.setEmail("test@example.com");
+        req.setPassword("password123");
+
+        Set<ConstraintViolation<RegisterRequest>> violations = validator.validate(req);
+        assertThat(violations).hasSizeGreaterThanOrEqualTo(1); // Expect at least one violation
+    }
 }
