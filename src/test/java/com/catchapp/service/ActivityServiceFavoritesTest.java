@@ -72,4 +72,17 @@ public class ActivityServiceFavoritesTest {
         verify(favoriteRepo, never()).save(any());
     }
 
+    @Test
+    void shouldThrowWhenActivityNotFoundOnLike() {
+        // testing so that an exception is thrown if the activity does not exist
+        when(userRepo.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(activityRepo.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.likeActivity("testuser", 99L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Activity not found");
+
+        verify(favoriteRepo, never()).save(any());
+    }
+
 }
