@@ -8,9 +8,11 @@ import com.catchapp.repository.FavoriteRepository;
 import com.catchapp.repository.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 
+@Transactional
 @ApplicationScoped
 public class ActivityService {
 

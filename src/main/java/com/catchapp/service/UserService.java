@@ -5,8 +5,10 @@ import com.catchapp.model.User;
 import com.catchapp.repository.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.mindrot.jbcrypt.BCrypt;
 
+@Transactional
 @ApplicationScoped
 public class UserService {
 
