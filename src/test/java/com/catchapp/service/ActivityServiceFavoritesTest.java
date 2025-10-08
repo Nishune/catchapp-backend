@@ -138,4 +138,16 @@ public class ActivityServiceFavoritesTest {
         verify(favoriteRepo, never()).findActivitiesByUser(any());
     }
 
+    @Test
+    void shouldDeleteFavoriteWhenExists() {
+        // Testing so that a favorite is deleted when it exists
+        when(userRepo.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(activityRepo.findById(10L)).thenReturn(Optional.of(activity));
+        when(favoriteRepo.existsByUserAndActivity(user, activity)).thenReturn(true);
+
+        service.unlikeActivity("testuser", 10L);
+
+        verify(favoriteRepo).deleteByUserAndActivity(user, activity);
+    }
+
 }
