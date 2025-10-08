@@ -2,6 +2,8 @@ package com.catchapp.service;
 
 import com.catchapp.model.Activity;
 import com.catchapp.repository.ActivityRepository;
+import com.catchapp.repository.FavoriteRepository;
+import com.catchapp.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +24,9 @@ class ActivityServiceTest {
     void setUp() {
         // Mock repo so that we can test the service layer in isolation
         repo = mock(ActivityRepository.class);
-        service = new ActivityService(repo);
+        var favRepo = mock(FavoriteRepository.class);
+        var userRepo = mock(UserRepository.class);
+        service = new ActivityService(repo, favRepo, userRepo);
     }
 
     @Test
