@@ -68,4 +68,10 @@ public class ActivityService {
 
         favoriteRepository.deleteByUserAndActivity(user, activity);
     }
+
+    public List<Activity> listFavorites(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return favoriteRepository.findActivitiesByUser(user);
+    }
 }
