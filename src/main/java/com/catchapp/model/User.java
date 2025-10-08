@@ -1,13 +1,36 @@
 package com.catchapp.model;
 
+import jakarta.persistence.*;
+
 import java.time.Instant;
 
+@Entity
+@Table(name = "users",
+        indexes = {
+                @Index(name = "ux_users_username", columnList = "username", unique = true),
+                @Index(name = "ux_users_email", columnList = "email", unique = true)
+        })
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, length = 50, unique = true)
     private String username;
+
+    @Column(nullable = false, length = 255, unique = true)
     private String email;
+
+    @Column(nullable = false, length = 60)
     private String passwordHash;
+
+    @Column(nullable = false)
     private Instant createdAt;
+
+    // Default constructor for JPA
+    protected User() {}
+
 
     private User(Builder builder) {
         this.id = builder.id;
@@ -15,6 +38,11 @@ public class User {
         this.email = builder.email;
         this.passwordHash = builder.passwordHash;
         this.createdAt = builder.createdAt != null ? builder.createdAt : Instant.now();
+    }
+
+    @PrePersist
+    protected void onCreate() { // Ensure createdAt is set before persisting
+        if (createdAt == null) createdAt = Instant.now();
     }
 
     public static Builder builder() {

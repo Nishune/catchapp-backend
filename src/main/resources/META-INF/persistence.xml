@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.0">
+    <persistence-unit name="catchappPU" transaction-type="JTA">
+        <!-- JTA-datasource i WildFly -->
+        <jta-data-source>java:/jdbc/CatchDS</jta-data-source>
+
+        <!-- Lista entiteter (säkert och tydligt) -->
+        <class>com.catchapp.model.User</class>
+        <class>com.catchapp.model.Activity</class>
+        <class>com.catchapp.model.Favorite</class>
+
+        <properties>
+            <!-- Hibernate / Postgres -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+
+            <!-- Utvecklingsläge: skapa/uppdatera schema automatiskt -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+
+            <!-- Bra vid felsökning -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+
+            <!-- Rätt tidszon för Instant -->
+            <property name="hibernate.jdbc.time_zone" value="UTC"/>
+        </properties>
+    </persistence-unit>
+</persistence>
