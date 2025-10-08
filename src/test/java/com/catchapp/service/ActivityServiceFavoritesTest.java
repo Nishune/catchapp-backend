@@ -126,4 +126,16 @@ public class ActivityServiceFavoritesTest {
         assertThat(favorites).isEmpty();
     }
 
+    @Test
+    void shouldThrowWhenUserNotFoundOnListFavorites() {
+        // should throw an exception if the user does not exist when listing favorites
+        when(userRepo.findByUsername("ghost")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.listFavorites("ghost"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("User not found");
+
+        verify(favoriteRepo, never()).findActivitiesByUser(any());
+    }
+
 }
