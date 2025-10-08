@@ -41,4 +41,22 @@ public class ActivityResource {
         activityService.likeActivity(username, id);
         return Response.ok(Map.of("message", "Activity liked")).build();
     }
+
+    @DELETE
+    @Path("/{id}/like")
+    @JwtSecured
+    public Response unlikeActivity(@PathParam("id") Long id, @Context SecurityContext context) {
+        String username = context.getUserPrincipal().getName();
+        activityService.unlikeActivity(username, id);
+        return Response.ok(Map.of("message", "Activity unliked")).build();
+    }
+
+    @GET
+    @Path("/favorites")
+    @JwtSecured
+    public Response listFavorites(@Context SecurityContext context) {
+        String username = context.getUserPrincipal().getName();
+        List<Activity> favorites = activityService.listFavorites(username);
+        return Response.ok(favorites).build();
+    }
 }
