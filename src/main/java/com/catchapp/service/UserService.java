@@ -21,6 +21,12 @@ public class UserService {
 
 public User register(String username, String email, String rawPassword) {
 
+        username = username.trim().toLowerCase();
+        email = email.trim().toLowerCase();
+
+        if (username.contains(" ")) {
+        throw new IllegalArgumentException("Username cannot contain spaces");
+    }
         if (userRepository.findByUsername(username).isPresent()) {
             throw new ConflictException("Username already exists");
         }
@@ -39,6 +45,9 @@ public User register(String username, String email, String rawPassword) {
 }
 
 public User authenticate(String username, String rawPassword) {
+
+        username = username.trim().toLowerCase();
+
         var optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isEmpty()) throw new IllegalArgumentException("Invalid username or password");
         User user = optionalUser.get();
