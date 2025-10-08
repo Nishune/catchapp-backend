@@ -85,4 +85,18 @@ public class ActivityServiceFavoritesTest {
         verify(favoriteRepo, never()).save(any());
     }
 
+    @Test
+    void shouldThrowWhenActivityAlreadyLiked() {
+        // testing so that an exception is thrown if the activity has already been liked by the user
+        when(userRepo.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(activityRepo.findById(10L)).thenReturn(Optional.of(activity));
+        when(favoriteRepo.existsByUserAndActivity(user, activity)).thenReturn(true);
+
+        assertThatThrownBy(() -> service.likeActivity("testuser", 10L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Activity already liked");
+
+        verify(favoriteRepo, never()).save(any());
+    }
+
 }
