@@ -102,7 +102,7 @@ public class ActivityServiceFavoritesTest {
     }
 
     @Test
-    void shouldReturnFavoritesForUser() {
+    void shouldReturnFavoritesWhenUserHasLikedActivities() {
         // Testing so that the correct list of favorite activities is returned for a user
         when(userRepo.findByUsername("testuser")).thenReturn(Optional.of(user));
         when(favoriteRepo.findActivitiesByUser(user)).thenReturn(List.of(activity));
@@ -151,7 +151,7 @@ public class ActivityServiceFavoritesTest {
     }
 
     @Test
-    void shouldThrowWhenUserNotFoundOnUnlike() {
+    void shouldThrowWhenNotFoundOnUnlike() {
         // should throw an exception if the user does not exist when unliking an activity
         when(userRepo.findByUsername("ghost")).thenReturn(Optional.empty());
 
@@ -171,6 +171,20 @@ public class ActivityServiceFavoritesTest {
         assertThatThrownBy(() -> service.unlikeActivity("testuser", 10L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Activity not found");
+
+        verify(favoriteRepo, never()).deleteByUserAndActivity(any(), any());
+    }
+
+    @Test
+    void shouldThrowWhenUserTriesToUnlikeActivityNotLiked() {
+        // should throw an exception if the activity was not previously liked by the user
+        when(userRepo.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(activityRepo.findById(10L)).thenReturn(Optional.of(activity));
+        when(favoriteRepo.existsByUserAndActivity(user, activity)).thenReturn(false);
+
+        assertThatThrownBy(() -> service.unlikeActivity("testuser", 10L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Activity not liked");
 
         verify(favoriteRepo, never()).deleteByUserAndActivity(any(), any());
     }
