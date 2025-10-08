@@ -115,4 +115,15 @@ public class ActivityServiceFavoritesTest {
         verify(favoriteRepo).findActivitiesByUser(user);
     }
 
+    @Test
+    void shouldReturnEmptyListWhenNoFavoritesExist() {
+        // empty list is returned if the user has no favorite activities
+        when(userRepo.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(favoriteRepo.findActivitiesByUser(user)).thenReturn(List.of());
+
+        List<Activity> favorites = service.listFavorites("testuser");
+
+        assertThat(favorites).isEmpty();
+    }
+
 }
