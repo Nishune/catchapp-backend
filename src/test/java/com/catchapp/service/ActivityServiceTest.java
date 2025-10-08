@@ -90,4 +90,48 @@ class ActivityServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Activity not found");
     }
+
+    @Test
+    void shouldReturnListOfActivities() {
+        var a1 = Activity.builder()
+                .id(1L)
+                .title("Filmkväll")
+                .date(LocalDate.now())
+                .build();
+        var a2 = Activity.builder()
+                .id(2L)
+                .title("Spela brädspel")
+                .date(LocalDate.now())
+                .build();
+
+        when(repo.findAll()).thenReturn(List.of(a1, a2));
+
+        var result = service.listActivities();
+
+        assertThat(result).hasSize(2);
+        verify(repo).findAll();
+    }
+
+    @Test
+    void shouldReturnActivityWhenFound() {
+        var a1 = Activity.builder().id(1L).title("Filmkväll").build();
+
+        when(repo.findById(1L)).thenReturn(Optional.of(a1));
+
+        var result = service.getActivityById(1L);
+
+        assertThat(result.getTitle()).isEqualTo("Filmkväll");
+        verify(repo).findById(1L);
+    }
+
+    @Test
+    void shouldThrowWhenActivityNotFound() {
+        when(repo.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.getActivityById(99L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Activity not found");
+
+        verify(repo).findById(99L);
+    }
 }
