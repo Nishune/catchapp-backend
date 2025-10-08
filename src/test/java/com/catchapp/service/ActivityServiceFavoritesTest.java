@@ -10,9 +10,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.Mockito.*;
 
 public class ActivityServiceFavoritesTest {
@@ -97,6 +99,20 @@ public class ActivityServiceFavoritesTest {
                 .hasMessage("Activity already liked");
 
         verify(favoriteRepo, never()).save(any());
+    }
+
+    @Test
+    void shouldReturnFavoritesForUser() {
+        // Testing so that the correct list of favorite activities is returned for a user
+        when(userRepo.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(favoriteRepo.findActivitiesByUser(user)).thenReturn(List.of(activity));
+
+        List<Activity> favorites = service.listFavorites("testuser");
+
+        // verifies that the returned list is correct
+        assertThat(favorites).hasSize(1);
+        assertThat(favorites.get(0).getTitle()).isEqualTo("Träning");
+        verify(favoriteRepo).findActivitiesByUser(user);
     }
 
 }
