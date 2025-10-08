@@ -123,4 +123,15 @@ class ActivityServiceTest {
         assertThat(result.getTitle()).isEqualTo("Filmkväll");
         verify(repo).findById(1L);
     }
+
+    @Test
+    void shouldThrowWhenActivityNotFound() {
+        when(repo.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.getActivityById(99L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Activity not found");
+
+        verify(repo).findById(99L);
+    }
 }
