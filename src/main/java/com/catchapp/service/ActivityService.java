@@ -1,6 +1,7 @@
 package com.catchapp.service;
 
 import com.catchapp.model.Activity;
+import com.catchapp.model.Favorite;
 import com.catchapp.model.User;
 import com.catchapp.repository.ActivityRepository;
 import com.catchapp.repository.FavoriteRepository;
@@ -41,6 +42,17 @@ public class ActivityService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Activity activity = activityRepository.findById(activityId)
-                .orElseThrow(() -> new IllegalArgumentException("Activity already liked"));
+                .orElseThrow(() -> new IllegalArgumentException("Activity not found"));
+
+        if (favoriteRepository.existsByUserAndActivity(user, activity)) {
+            throw new IllegalArgumentException("Activity already liked");
+        }
+
+        Favorite favorite = Favorite.builder()
+                .user(user)
+                .activity(activity)
+                .build();
+
+        favoriteRepository.save(favorite);
     }
 }
