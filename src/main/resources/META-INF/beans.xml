@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="https://jakarta.ee/xml/ns/jakartaee" version="4.0" bean-discovery-mode="annotated">
+    <alternatives>
+        <class>com.catchapp.repository.jpa.JpaUserRepository</class>
+        <class>com.catchapp.repository.jpa.JpaActivityRepository</class>
+        <class>com.catchapp.repository.jpa.JpaFavoriteRepository</class>
+    </alternatives>
+</beans>
