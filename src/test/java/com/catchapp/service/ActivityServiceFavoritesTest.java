@@ -162,4 +162,17 @@ public class ActivityServiceFavoritesTest {
         verify(favoriteRepo, never()).deleteByUserAndActivity(any(), any());
     }
 
+    @Test
+    void shouldThrowWhenActivityNotFoundOnUnlike() {
+        // should throw an exception if the activity does not exist when unliking
+        when(userRepo.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(activityRepo.findById(10L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.unlikeActivity("testuser", 10L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Activity not found");
+
+        verify(favoriteRepo, never()).deleteByUserAndActivity(any(), any());
+    }
+
 }
