@@ -1,32 +1,30 @@
 package com.catchapp.config;
 
-import jakarta.ws.rs.container.ContainerRequestContext;
-import jakarta.ws.rs.container.ContainerResponseContext;
-import jakarta.ws.rs.container.ContainerResponseFilter;
-import jakarta.ws.rs.ext.Provider;
+import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Provider
-public class CorsFilter implements ContainerResponseFilter {
-
+@WebFilter("/*")   // <-- registrerar filtret
+public class CorsFilter implements Filter {
     @Override
-    public void filter(ContainerRequestContext req, ContainerResponseContext res) throws IOException {
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
+            throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) res;
 
-        // Tillåt frontend att anropa backend (lokalt)
-        res.getHeaders().putSingle("Access-Control-Allow-Origin", "http://localhost:4200");
-
-        // Gör det möjligt att skicka cookies / auth headers
-        res.getHeaders().putSingle("Access-Control-Allow-Credentials", "true");
-
-        // Tillåt nödvändiga headers (inkl. Authorization för JWT)
-        res.getHeaders().putSingle("Access-Control-Allow-Headers",
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Headers",
                 "Origin, Content-Type, Accept, Authorization, X-Requested-With");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+        response.setHeader("Access-Control-Max-Age", "3600");
 
-        // Tillåt alla metoder som används i din app
-        res.getHeaders().putSingle("Access-Control-Allow-Methods",
-                "GET, POST, PUT, DELETE, OPTIONS, HEAD");
-
-        // Valfritt men rekommenderat: ange hur länge en preflight kan cacheas
-        res.getHeaders().putSingle("Access-Control-Max-Age", "3600");
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return; // preflight klart
+        }
+        chain.doFilter(req, res);
     }
 }
