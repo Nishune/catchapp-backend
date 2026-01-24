@@ -1,16 +1,34 @@
 package com.catchapp.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 
+
+@Entity
+@Table(name = "activities")
 public class Activity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, length = 120)
     private String title;
+
+    @Column(nullable = false, length = 2000)
     private String description;
+
+    @Column(nullable = false)
     private LocalDate date;
+
+    @Column(nullable = false, length = 120)
     private String location;
+
+    @Column(length = 2048)
     private String imageUrl;
 
-    public Activity() {}
+    protected Activity() {}
 
     private Activity(Builder builder) {
         this.id = builder.id;

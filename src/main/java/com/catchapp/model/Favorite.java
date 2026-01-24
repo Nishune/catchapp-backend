@@ -1,20 +1,43 @@
 package com.catchapp.model;
 
+import jakarta.persistence.*;
+
 import java.time.Instant;
 
+
+@Entity
+@Table(name = "favorites",
+        uniqueConstraints = @UniqueConstraint(name="ux_fav_user_activity", columnNames={"user_id","activity_id"}))
 public class Favorite {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private Instant createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_fav_user"))
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="activity_id", nullable=false,
+            foreignKey=@ForeignKey(name="fk_fav_activity"))
     private Activity activity;
 
-    public Favorite() {}
+    protected Favorite() {}
 
     private Favorite(Builder builder) {
         this.id = builder.id;
         this.createdAt = builder.createdAt != null ? builder.createdAt : Instant.now();
         this.user = builder.user;
         this.activity = builder.activity;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) createdAt = Instant.now();
     }
 
     public static Builder builder() { return new Builder(); }
